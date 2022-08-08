@@ -6,7 +6,7 @@ using UnityEngine;
 public class DiceData : ScriptableObject
 {
     public int[] eyes = new int[6] { 1, 2, 3, 4, 5, 6 };
-    public int[] weights = new int[6] { 1, 1, 1, 1, 1, 1 };
+    public bool[] weights = new bool[6] { false, false, false, false, false, false };
 
     private void OnValidate()
     {
@@ -25,11 +25,20 @@ public class DiceData : ScriptableObject
         return retValue;
     }
 
+    private bool[] ShortenArray(bool[] array) 
+    {
+        bool[] retValue = new bool[6];
+        for (int i = 0; i < 6; i++) 
+        {
+            retValue[i] = array[i];
+        }
+        return retValue;
+    }
+
     private void CapValues() 
     {
         for(int i = 0; i < 6; i++)
         {
-            weights[i] = Mathf.Clamp(weights[i], 1, 6);
             eyes[i] = Mathf.Clamp(eyes[i], 1, 6);
         }
     }

@@ -12,6 +12,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected Rigidbody2D rb = default;
     [SerializeField] private float bounceForce = default;
 
+    [Header("Loot")]
+    [SerializeField] private GameObject dropItem = default;
+    [SerializeField] private float dropChance = default;
+
     private Vector2 currentVelocity;
 
     private int currentHealth;
@@ -52,6 +56,13 @@ public class Enemy : MonoBehaviour
 
     public void Die() 
     {
+        DropItem();
         Destroy(gameObject);
+    }
+
+    protected void DropItem() 
+    {
+        if (dropChance > Random.value)
+            Instantiate(dropItem, transform.position, Quaternion.identity);
     }
 }

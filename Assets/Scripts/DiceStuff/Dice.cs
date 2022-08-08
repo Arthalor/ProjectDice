@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Helper;
 
 [Serializable]
 public class Dice
 {
-    public int[] eyes = new int[6] { 1, 2, 3, 4, 5, 6, };
-    public int[] weights = new int[6] { 1, 1, 1, 1, 1, 1, };
+    public int[] pips = new int[6] { 1, 2, 3, 4, 5, 6, };
+    public bool[] weights = new bool[6] { false, false, false, false, false, false, };
 
     public DiceType GetDiceType() 
     {
@@ -30,8 +32,19 @@ public class Dice
 
     public Dice(DiceData fromData) 
     {
-        eyes = fromData.eyes;
+        pips = fromData.eyes;
         weights = fromData.weights;
+    }
+
+    public Dice(bool randomize) 
+    {
+        if (randomize) Randomize();
+    }
+
+    public Dice(Dice fromDice) 
+    {
+        pips = fromDice.pips;
+        weights = fromDice.weights;
     }
 
     public void Randomize() 
@@ -44,7 +57,7 @@ public class Dice
     {
         for (int i = 0; i < 6; i++)
         {
-            eyes[i] = Random.Range(1, 7);
+            pips[i] = Random.Range(1, 7);
         }
     }
 
@@ -52,15 +65,15 @@ public class Dice
     {
         for (int i = 0; i < 3; i++)
         {
-            weights[RandomSide()] = Random.Range(1, 7);
+            weights[RandomSide()] = RandomH.Coinflip();
         }
     }
 
     private bool IsAltered()
     {
-        for (int i = 0; i < eyes.Length; i++)
+        for (int i = 0; i < pips.Length; i++)
         {
-            if (eyes[i] != i + 1) return true;
+            if (pips[i] != i + 1) return true;
         }
         return false;
     }
@@ -69,7 +82,7 @@ public class Dice
     {
         for (int i = 0; i < weights.Length; i++)
         {
-            if (weights[i] != 1) return true;
+            if (weights[i]) return true;
         }
         return false;
     }
@@ -90,16 +103,6 @@ public class Dice
         throw new System.Exception();
     }
 
-    private int SumWeights()
-    {
-        int sum = 0;
-        foreach (int w in weights)
-        {
-            sum += w;
-        }
-        return sum;
-    }
-
     private int RandomSide()
     {
         return Random.Range(0, 6);
@@ -107,39 +110,28 @@ public class Dice
 
     private int WeightedSide()
     {
-        int weightSum = SumWeights();
-        int sideRoll = Random.Range(0, weightSum);
-        int weightedIndex = 0;
-        for (int i = 0; i < weightSum; i++)
+        //Weighted is ALWAYS just double the chance
+        int randomIndex = RandomSide();
+        if (RandomH.Coinflip()) 
         {
-            int indexRange = weights[weightedIndex] - 1;
-            for (int j = indexRange; j >= 0; j--)
-            {
-                if (sideRoll == (i + j))
-                {
-                    Debug.Log(weightedIndex);
-                    return weightedIndex;
-                }
-            }
-            i += indexRange;
-            weightedIndex++;
+            if (weights[randomIndex]) return randomIndex;
+            else return WeightedSide();
         }
-        Debug.Log("WEIGHTS NOT WORKING");
-        return weightedIndex;
+        return randomIndex;
     }
 
     private int ReturnEyesOnSide(int side)
     {
-        return eyes[side];
+        return pips[side];
     }
 
     public void SwapDice(ref Dice diceTwo)
     {
         Dice copy = diceTwo;
-        diceTwo.eyes = eyes;
+        diceTwo.pips = pips;
         diceTwo.weights = weights;
 
-        eyes = copy.eyes;
+        pips = copy.pips;
         weights = copy.weights;
     }
 
@@ -149,5 +141,10 @@ public class Dice
         EyeAlterd,
         Weighted,
         Loaded,
+    }
+
+    public Sprite TypeSprite() 
+    {
+        return null;
     }
 }

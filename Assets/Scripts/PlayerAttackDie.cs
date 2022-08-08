@@ -15,6 +15,7 @@ public class PlayerAttackDie : MonoBehaviour
     private Timer reloadTimer;
     
     private BulletBehaviour bullet;
+    [SerializeField] private float orbitDistance = default;
 
     private void Start()
     {
@@ -53,7 +54,7 @@ public class PlayerAttackDie : MonoBehaviour
 
         float angle = (Mathf.Rad2Deg * Mathf.Atan2(inputDirection.y, inputDirection.x)) - 90;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-        transform.position = new Vector2(orbit.position.x, orbit.transform.position.y) + inputDirection;
+        transform.position = new Vector2(orbit.position.x, orbit.transform.position.y) + inputDirection * orbitDistance;
     }
 
     private void RollBulletStats() 

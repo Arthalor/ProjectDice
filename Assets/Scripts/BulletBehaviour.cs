@@ -19,7 +19,7 @@ public class BulletBehaviour : MonoBehaviour
     private int range;
 
     private bool collided = false;
-    private float size = 1f;
+    [SerializeField] private float shrinkAmountFrame = default;
 
     private void Update()
     {
@@ -72,7 +72,7 @@ public class BulletBehaviour : MonoBehaviour
     private void ShrinkingBehaviour() 
     {
         if (transform.localScale.magnitude > 0.05f)
-            transform.localScale = transform.localScale - Vector3.one * 0.01f;
+            transform.localScale = transform.localScale - Vector3.one * shrinkAmountFrame;
         else Destroy(gameObject);
     }
 }

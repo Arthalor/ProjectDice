@@ -15,8 +15,8 @@ public class HoverUI : MonoBehaviour
     {
         for (int i = 0; i < 6; i++) 
         {
-            eyes[i].sprite = eyeSprites[dice.eyes[i] - 1];
-            weights[i].sprite = weightSprite[dice.weights[i] - 1];
+            eyes[i].sprite = eyeSprites[dice.pips[i] - 1];
+            weights[i].sprite = weightSprite[0];
         }
     }
 }
